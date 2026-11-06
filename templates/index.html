@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estacionamento - Painel de Controle</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    <!-- Menu Lateral (Sidebar) -->
+    <aside class="sidebar">
+        <div class="brand">
+            <h2>🚗 EstacioPark</h2>
+            <p>Sistema de Gestão</p>
+        </div>
+        <nav class="menu">
+            <button class="nav-btn active" onclick="trocarAba('vagas', event)">🅿️ Status das Vagas</button>
+            <button class="nav-btn" onclick="trocarAba('cliente', event)">👤 Cadastrar Cliente</button>
+            <button class="nav-btn" onclick="trocarAba('veiculo', event)">🚘 Cadastrar Veículo</button>
+            <button class="nav-btn" onclick="trocarAba('entrada', event)">🔑 Registrar Entrada</button>
+            <button class="nav-btn" onclick="trocarAba('saida', event)">🚪 Registrar Saída</button>
+            <button class="nav-btn" onclick="trocarAba('estacionados', event)">📋 Veículos No Pátio</button>
+        </nav>
+    </aside>
+
+    <!-- Conteúdo Principal -->
+    <main class="main-content">
+        <header class="topbar">
+            <h1 id="tituloPagina">Status das Vagas no Pátio</h1>
+        </header>
+
+        <!-- ABA 1: Status das Vagas + Dashboard -->
+        <section id="aba-vagas" class="aba-conteudo active">
+            <div class="dashboard-grid">
+                <div class="dash-card">
+                    <span class="dash-title">Total de Vagas</span>
+                    <span class="dash-value" id="dashTotal">0</span>
+                </div>
+                <div class="dash-card livre">
+                    <span class="dash-title">Vagas Livres</span>
+                    <span class="dash-value" id="dashLivres">0</span>
+                </div>
+                <div class="dash-card ocupada">
+                    <span class="dash-title">Vagas Ocupadas</span>
+                    <span class="dash-value" id="dashOcupadas">0</span>
+                </div>
+                <div class="dash-card taxa">
+                    <span class="dash-title">Taxa de Ocupação</span>
+                    <span class="dash-value" id="dashTaxa">0%</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>🅿️ Mapa de Vagas</h2>
+                <div id="gridVagas" class="grid-vagas">
+                    <!-- Preenchido via JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ABA 2: Cadastrar Cliente -->
+        <section id="aba-cliente" class="aba-conteudo">
+            <div class="card form-card">
+                <h2>👤 Cadastrar Novo Cliente</h2>
+                <form id="formCliente">
+                    <div class="form-group">
+                        <label>Nome Completo</label>
+                        <input type="text" id="nomeCliente" placeholder="Ex: João Silva" required>
+                    </div>
+                    <div class="form-group">
+                        <label>CPF</label>
+                        <input type="text" id="cpfCliente" placeholder="000.000.000-00" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Telefone</label>
+                        <input type="text" id="telCliente" placeholder="(00) 00000-0000">
+                    </div>
+                    <button type="submit" class="btn btn-success">Cadastrar Cliente</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- ABA 3: Cadastrar Veículo -->
+        <section id="aba-veiculo" class="aba-conteudo">
+            <div class="card form-card">
+                <h2>🚘 Cadastrar Novo Veículo</h2>
+                <form id="formVeiculo">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Placa</label>
+                            <input type="text" id="placaVeiculo" placeholder="ABC-1234" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Modelo / Marca</label>
+                            <input type="text" id="modeloVeiculo" placeholder="Ex: Civic / Honda" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Cor</label>
+                            <input type="text" id="corVeiculo" placeholder="Ex: Preto">
+                        </div>
+                        <div class="form-group">
+                            <label>Ano</label>
+                            <input type="number" id="anoVeiculo" placeholder="2022" value="2022">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Tamanho</label>
+                            <select id="tamanhoVeiculo">
+                                <option value="Pequeno">Pequeno</option>
+                                <option value="Médio" selected>Médio</option>
+                                <option value="Grande">Grande</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Tipo</label>
+                            <select id="tipoVeiculo">
+                                <option value="Carro" selected>Carro</option>
+                                <option value="Moto">Moto</option>
+                                <option value="Caminhonete">Caminhonete</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Cliente (Proprietário)</label>
+                        <select id="selectClienteVeiculo" required>
+                            <option value="">Carregando clientes...</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-success">Cadastrar Veículo</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- ABA 4: Registrar Entrada -->
+        <section id="aba-entrada" class="aba-conteudo">
+            <div class="card form-card">
+                <h2>🔑 Registrar Entrada de Veículo</h2>
+                <form id="formEntrada">
+                    <div class="form-group">
+                        <label>Placa do Veículo</label>
+                        <input type="text" id="placaEntrada" placeholder="Ex: ABC-1234" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Vaga Disponível</label>
+                        <select id="selectVagaEntrada" required>
+                            <option value="">Carregando vagas livres...</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Registrar Entrada</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- ABA 5: Registrar Saída -->
+        <section id="aba-saida" class="aba-conteudo">
+            <div class="card form-card">
+                <h2>🚪 Registrar Saída de Veículo</h2>
+                <form id="formSaida">
+                    <div class="form-group">
+                        <label>Placa do Veículo</label>
+                        <input type="text" id="placaSaida" placeholder="Ex: ABC-1234" required>
+                    </div>
+                    <button type="submit" class="btn btn-danger">Confirmar Saída e Cobrança</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- ABA 6: Veículos No Pátio -->
+        <section id="aba-estacionados" class="aba-conteudo">
+            <div class="card">
+                <div class="card-header-flex">
+                    <h2>📋 Veículos Estacionados no Momento</h2>
+                    <button id="btnAtualizar" class="btn btn-info">🔄 Atualizar Lista</button>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Placa</th>
+                                <th>Modelo / Marca</th>
+                                <th>Vaga</th>
+                                <th>Data / Hora Entrada</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabelaEstacionados">
+                            <!-- Preenchido via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+
+</html>
